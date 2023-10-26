@@ -15,17 +15,25 @@ function csvToJson($csvUrl) {
 
     $jsonArray = [];
 
-    foreach ($csvData as $row) {
-        $jsonArrayItem = array[];
-        for ($i) {
-            $jsonArrayItem[$headers[$i]] = $row[$i];
-        }
-        $jsonArray[] = $jsonArrayItem;
-    }
+    foreach ($csvData as $row => $value) {
+        if (is_array($value)) {
+            $result[$row] = $csvData($value);
+        } else {
+            $keys = explode($value, $row);
+            if (count($keys) > 1) {
+                $field = [];
+                for ($i = count($keys) - 1; $i >= 0; $i--) {
+                    $field[$keys[$i]] = $value;
+                    $value = $field;
+                    $field = [];
+                }
+            }
 
+        }
     return json_encode($jsonArray);
 }
 
+}
 $csvUrl = 'https://testingalpro.alwaysdata.net/api/coffee.csv';
 $jsonData = csvToJson($csvUrl);
 
